@@ -19,42 +19,42 @@ import {
 } from 'src/constants/articleProps';
 import clsx from 'clsx';
 
-type ArticleProps = {
+type ArticleParamsFormProps = {
 	onApply: (state: ArticleStateType) => void;
 };
 
-export const ArticleParamsForm = ({ onApply }: ArticleProps) => {
-	const [isOpen, setIsOpen] = useState<boolean>(false);
+export const ArticleParamsForm = ({ onApply }: ArticleParamsFormProps) => {
+	const [isFormOpen, setIsFormOpen] = useState<boolean>(false);
 	const formRef = useRef<HTMLDivElement>(null);
 
 	const [articleStates, setArticleStates] =
 		useState<ArticleStateType>(defaultArticleState);
 
-	const handleButton = () => {
-		setIsOpen(!isOpen);
+	const toggleSidebar = () => {
+		setIsFormOpen(!isFormOpen);
 	};
 
 	useEffect(() => {
-		const click = (event: MouseEvent) => {
+		const closeSidebar = (event: MouseEvent) => {
 			const { target } = event;
 
 			if (target instanceof Node && !formRef.current?.contains(target)) {
-				setIsOpen(false);
+				setIsFormOpen(false);
 			}
 		};
 
-		if (!isOpen) {
+		if (!isFormOpen) {
 			return;
 		}
 
-		window.addEventListener('mousedown', click);
+		window.addEventListener('mousedown', closeSidebar);
 
 		return () => {
-			window.removeEventListener('mousedown', click);
+			window.removeEventListener('mousedown', closeSidebar);
 		};
-	}, [isOpen]);
+	}, [isFormOpen]);
 
-	const fieldChange =
+	const changeField =
 		(field: keyof ArticleStateType) => (option: OptionType) => {
 			setArticleStates((prev) => ({ ...prev, [field]: option }));
 		};
@@ -72,10 +72,10 @@ export const ArticleParamsForm = ({ onApply }: ArticleProps) => {
 
 	return (
 		<div ref={formRef}>
-			<ArrowButton isOpen={isOpen} onClick={handleButton} />
+			<ArrowButton isOpen={isFormOpen} onClick={toggleSidebar} />
 			<aside
 				className={clsx(styles.container, {
-					[styles.container_open]: isOpen,
+					[styles.container_open]: isFormOpen,
 				})}>
 				<form
 					className={styles.form}
@@ -89,21 +89,21 @@ export const ArticleParamsForm = ({ onApply }: ArticleProps) => {
 						options={fontFamilyOptions}
 						selected={articleStates.fontFamilyOption}
 						placeholder={articleStates.fontFamilyOption.title}
-						onChange={fieldChange('fontFamilyOption')}
+						onChange={changeField('fontFamilyOption')}
 					/>
 					<RadioGroup
 						title='Размер шрифта'
 						name='font-size'
 						options={fontSizeOptions}
 						selected={articleStates.fontSizeOption}
-						onChange={fieldChange('fontSizeOption')}
+						onChange={changeField('fontSizeOption')}
 					/>
 					<Select
 						title='Цвет шрифта'
 						options={fontColors}
 						selected={articleStates.fontColor}
 						placeholder={articleStates.fontColor.title}
-						onChange={fieldChange('fontColor')}
+						onChange={changeField('fontColor')}
 					/>
 					<Separator />
 					<Select
@@ -111,14 +111,14 @@ export const ArticleParamsForm = ({ onApply }: ArticleProps) => {
 						options={backgroundColors}
 						selected={articleStates.backgroundColor}
 						placeholder={articleStates.backgroundColor.title}
-						onChange={fieldChange('backgroundColor')}
+						onChange={changeField('backgroundColor')}
 					/>
 					<Select
 						title='Ширина контента'
 						options={contentWidthArr}
 						selected={articleStates.contentWidth}
 						placeholder={articleStates.contentWidth.title}
-						onChange={fieldChange('contentWidth')}
+						onChange={changeField('contentWidth')}
 					/>
 					<div className={styles.bottomContainer}>
 						<Button title='Сбросить' htmlType='reset' type='clear' />

@@ -11,20 +11,21 @@ import {
 import styles from './app.module.scss';
 
 export const App = () => {
-	const [state, setState] = useState<ArticleStateType>(defaultArticleState);
+	const [articleSettings, setArticleSettings] =
+		useState<ArticleStateType>(defaultArticleState);
 	return (
 		<main
 			className={clsx(styles.main)}
 			style={
 				{
-					'--font-family': state.fontFamilyOption.value,
-					'--font-size': state.fontSizeOption.value,
-					'--font-color': state.fontColor.value,
-					'--container-width': state.contentWidth.value,
-					'--bg-color': state.backgroundColor.value,
+					'--font-family': articleSettings.fontFamilyOption.value,
+					'--font-size': articleSettings.fontSizeOption.value,
+					'--font-color': articleSettings.fontColor.value,
+					'--container-width': articleSettings.contentWidth.value,
+					'--bg-color': articleSettings.backgroundColor.value,
 				} as CSSProperties
 			}>
-			<ArticleParamsForm onApply={setState} />
+			<ArticleParamsForm onApply={setArticleSettings} />
 			<Article />
 		</main>
 	);
